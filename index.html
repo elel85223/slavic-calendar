@@ -889,10 +889,21 @@ function showMonth() {
             this.style.boxShadow = 'none';
         };
         
-        dayCell.onclick = function() {
-            currentDate = new Date(year, month, day);
-            showView('three-days');
-        };
+        // Используем атрибут для хранения дня
+dayCell.setAttribute('data-day', day);
+dayCell.onclick = function() {
+    const selectedDay = parseInt(this.getAttribute('data-day'));
+    currentDate = new Date(year, month, selectedDay);
+    // Скрываем месячный вид
+    document.getElementById('monthViewContainer').style.display = 'none';
+    // Переключаемся на вид трёх дней
+    currentView = 'three-days';
+    showThreeDays();
+    // Обновляем активные кнопки
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    const buttons = document.querySelectorAll('.nav-btn');
+    if (buttons[0]) buttons[0].classList.add('active');
+};
         
         monthGrid.appendChild(dayCell);
     }
