@@ -798,12 +798,25 @@ fetch('calendar-data.json')
         
 // Функция для отображения месяца
 function showMonth() {
-    const container = document.getElementById('daysContainer');
-    container.style.display = 'none';
-    document.getElementById('weekView').style.display = 'none';
+    // Получаем существующие контейнеры
+    let container = document.getElementById('daysContainer');
+    let weekView = document.getElementById('weekView');
     
-    const monthView = document.createElement('div');
-    monthView.style.cssText = 'padding: 20px; max-width: 1200px; margin: 0 auto;';
+    // Скрываем их, если они существуют
+    if (container) container.style.display = 'none';
+    if (weekView) weekView.style.display = 'none';
+    
+    // Проверяем, есть ли уже контейнер для месяца
+    let monthView = document.getElementById('monthViewContainer');
+    if (!monthView) {
+        // Создаём новый контейнер для месячного вида
+        monthView = document.createElement('div');
+        monthView.id = 'monthViewContainer';
+        monthView.style.cssText = 'padding: 20px; max-width: 1200px; margin: 0 auto; width: 100%;';
+        document.querySelector('.main-container').appendChild(monthView);
+    } else {
+        monthView.style.display = 'block';
+    }
     
     // Получаем текущий месяц и год
     const year = currentDate.getFullYear();
@@ -884,11 +897,6 @@ function showMonth() {
         monthGrid.appendChild(dayCell);
     }
     
-    // Очищаем и добавляем новый вид
-    const mainContainer = document.querySelector('.main-container');
-    mainContainer.innerHTML = '';
-    mainContainer.appendChild(monthView);
-    
     updateDateDisplay();
 }
         
@@ -899,7 +907,9 @@ function showMonth() {
             // Обновляем активную кнопку
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.mobile-menu-item').forEach(btn => btn.classList.remove('active'));
-            
+          // Скрываем месячный вид если он есть
+const monthViewContainer = document.getElementById('monthViewContainer');
+if (monthViewContainer) monthViewContainer.style.display = 'none';  
             switch(view) {
                 case 'three-days':
                     showThreeDays();
