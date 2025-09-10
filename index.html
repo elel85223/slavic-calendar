@@ -796,10 +796,101 @@ fetch('calendar-data.json')
             updateDateDisplay();
         }
         
-        // Функция для отображения месяца (упрощенная версия)
-        function showMonth() {
-            alert('Режим месяца в разработке. Используйте режим "Три дня" или "Неделя"');
-        }
+// Функция для отображения месяца
+function showMonth() {
+    const container = document.getElementById('daysContainer');
+    container.style.display = 'none';
+    document.getElementById('weekView').style.display = 'none';
+    
+    const monthView = document.createElement('div');
+    monthView.style.cssText = 'padding: 20px; max-width: 1200px; margin: 0 auto;';
+    
+    // Получаем текущий месяц и год
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    
+    // Создаём заголовок месяца
+    const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 
+                       'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+    
+    monthView.innerHTML = `
+        <h2 style="text-align: center; color: #ffd700; margin-bottom: 20px; font-size: 2em;">
+            ${monthNames[month]} ${year}
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px;">
+            <div style="text-align: center; color: #ffd700; font-weight: bold;">Пн</div>
+            <div style="text-align: center; color: #ffd700; font-weight: bold;">Вт</div>
+            <div style="text-align: center; color: #ffd700; font-weight: bold;">Ср</div>
+            <div style="text-align: center; color: #ffd700; font-weight: bold;">Чт</div>
+            <div style="text-align: center; color: #ffd700; font-weight: bold;">Пт</div>
+            <div style="text-align: center; color: #ffd700; font-weight: bold;">Сб</div>
+            <div style="text-align: center; color: #ffd700; font-weight: bold;">Вс</div>
+        </div>
+        <div id="monthGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 10px;">
+        </div>
+    `;
+    
+    const monthGrid = monthView.querySelector('#monthGrid');
+    
+    // Добавляем пустые ячейки до первого дня месяца
+    let startDay = firstDay.getDay();
+    if (startDay === 0) startDay = 7; // Воскресенье = 7
+    for (let i = 1; i < startDay; i++) {
+        monthGrid.innerHTML += '<div></div>';
+    }
+    
+    // Добавляем дни месяца
+    for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const dayData = getDayData(date);
+        const isToday = date.toDateString() === new Date().toDateString();
+        
+        const dayCell = document.createElement('div');
+        dayCell.style.cssText = `
+            background: ${isToday ? 'linear-gradient(135deg, #ffd700, #ff9547)' : 'rgba(255,255,255,0.9)'};
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 80px;
+            color: ${isToday ? 'white' : '#333'};
+        `;
+        
+        dayCell.innerHTML = `
+            <div style="font-weight: bold; font-size: 1.2em;">${day}</div>
+            <div style="font-size: 0.8em; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${dayData.name}
+            </div>
+        `;
+        
+        dayCell.onmouseover = function() {
+            this.style.transform = 'scale(1.05)';
+            this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+        };
+        
+        dayCell.onmouseout = function() {
+            this.style.transform = 'scale(1)';
+            this.style.boxShadow = 'none';
+        };
+        
+        dayCell.onclick = function() {
+            currentDate = new Date(year, month, day);
+            showView('three-days');
+        };
+        
+        monthGrid.appendChild(dayCell);
+    }
+    
+    // Очищаем и добавляем новый вид
+    const mainContainer = document.querySelector('.main-container');
+    mainContainer.innerHTML = '';
+    mainContainer.appendChild(monthView);
+    
+    updateDateDisplay();
+}
         
         // Функция переключения видов
         function showView(view) {
