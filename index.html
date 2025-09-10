@@ -913,15 +913,18 @@ function showMonth() {
             }
         }
         
-        // Функция навигации по датам
-        function navigateDate(direction) {
-            if (currentView === 'three-days') {
-                currentDate.setDate(currentDate.getDate() + direction);
-            } else if (currentView === 'week') {
-                currentDate.setDate(currentDate.getDate() + (direction * 7));
-            }
-            showView(currentView);
-        }
+// Функция навигации по датам
+function navigateDate(direction) {
+    if (currentView === 'three-days') {
+        currentDate.setDate(currentDate.getDate() + direction);
+    } else if (currentView === 'week') {
+        currentDate.setDate(currentDate.getDate() + (direction * 7));
+    } else if (currentView === 'month') {
+        // Для режима месяца - переключаем месяцы
+        currentDate.setMonth(currentDate.getMonth() + direction);
+    }
+    showView(currentView);
+}
         
         // Функция обновления отображения даты
         function updateDateDisplay() {
