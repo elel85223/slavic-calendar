@@ -650,51 +650,6 @@ fetch('calendar-data.json')
         // Если не удалось загрузить, используем встроенные данные
     });
 
-// Обработчик загрузки Excel файла
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('excelFile').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            const data = new Uint8Array(e.target.result);
-            const workbook = XLSX.read(data, {type: 'array'});
-            
-            // Берём первый лист
-            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-            
-            // Конвертируем в JSON
-            const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
-            
-            // Преобразуем в нужный формат
-            calendarData = [];
-            
-            // Пропускаем заголовок (первую строку)
-            for(let i = 1; i < jsonData.length; i++) {
-                const row = jsonData[i];
-                if(row[0]) { // Если есть дата
-                    calendarData.push({
-                        date: row[0], // Колонка A - Дата
-                        name: row[1] || "", // Колонка B - Народное название
-                        traditions: row[3] || "", // Колонка D - Традиции
-                        signs: row[4] || "", // Колонка E - Приметы
-                        nature: row[5] || "" // Колонка F - Наблюдения
-                    });
-                }
-            }
-            
-            alert('Календарь загружен! Всего дней: ' + calendarData.length);
-            // Сохраняем в память браузера
-localStorage.setItem('customCalendarData', JSON.stringify(calendarData));
-            
-            // Обновляем отображение
-            showView(currentView);
-        };
-        
-        reader.readAsArrayBuffer(file);
-    });
-});
-
 // Загружаем сохранённые данные или используем встроенные
         // База данных календаря
        
