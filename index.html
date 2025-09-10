@@ -633,8 +633,55 @@
     <div class="swipe-hint" id="swipeHint" style="display: none;">← Свайпните для переключения →</div>
 
     <script>
+        // Переменная для хранения данных календаря
+let calendarData = [];
+
+// Обработчик загрузки Excel файла
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('excelFile').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            
+            // Берём первый лист
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            
+            // Конвертируем в JSON
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+            
+            // Преобразуем в нужный формат
+            calendarData = [];
+            
+            // Пропускаем заголовок (первую строку)
+            for(let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                if(row[0]) { // Если есть дата
+                    calendarData.push({
+                        date: row[0], // Колонка A - Дата
+                        name: row[1] || "", // Колонка B - Народное название
+                        traditions: row[3] || "", // Колонка D - Традиции
+                        signs: row[4] || "", // Колонка E - Приметы
+                        nature: row[5] || "" // Колонка F - Наблюдения
+                    });
+                }
+            }
+            
+            alert('Календарь загружен! Всего дней: ' + calendarData.length);
+            
+            // Обновляем отображение
+            showView(currentView);
+        };
+        
+        reader.readAsArrayBuffer(file);
+    });
+});
+
+// Загружаем сохранённые данные или используем встроенные
         // База данных календаря
-        const calendarData = [
+        if (calendarData.length === 0) calendarData = [
             // ЯНВАРЬ
             {date: "1 января", name: "День Ильи Муромца", traditions: "Молились о защите дома; Обходили дом с иконой", signs: "Какова погода - таков весь год; Звездная ночь - к урожаю ягод", nature: "Воробьи прячутся - к метели; Дым столбом - к морозу"},
             {date: "2 января", name: "День Игнатия Богоносца", traditions: "Служили молебны; Обходили поля с хлебом-солью", signs: "Иней на деревьях - к урожаю; Ясный день - к урожайному году", nature: "Синицы у дома - к холодам"},
