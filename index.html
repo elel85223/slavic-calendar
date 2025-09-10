@@ -636,6 +636,13 @@
         // Переменная для хранения данных календаря
 let calendarData = [];
 
+// Загружаем сохранённые данные при старте
+const savedData = localStorage.getItem('customCalendarData');
+if (savedData) {
+    calendarData = JSON.parse(savedData);
+    console.log('Загружены сохранённые данные: ' + calendarData.length + ' дней');
+}
+
 // Обработчик загрузки Excel файла
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('excelFile').addEventListener('change', function(e) {
@@ -682,11 +689,6 @@ localStorage.setItem('customCalendarData', JSON.stringify(calendarData));
 });
 
 // Загружаем сохранённые данные или используем встроенные
-        const savedData = localStorage.getItem('customCalendarData');
-if (savedData) {
-    calendarData = JSON.parse(savedData);
-    console.log('Загружены сохранённые данные: ' + calendarData.length + ' дней');
-}
         // База данных календаря
         if (calendarData.length === 0) calendarData = [
             // ЯНВАРЬ
