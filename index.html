@@ -670,6 +670,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             alert('Календарь загружен! Всего дней: ' + calendarData.length);
+            // Сохраняем в память браузера
+localStorage.setItem('customCalendarData', JSON.stringify(calendarData));
             
             // Обновляем отображение
             showView(currentView);
@@ -680,6 +682,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Загружаем сохранённые данные или используем встроенные
+        const savedData = localStorage.getItem('customCalendarData');
+if (savedData) {
+    calendarData = JSON.parse(savedData);
+    console.log('Загружены сохранённые данные: ' + calendarData.length + ' дней');
+}
         // База данных календаря
         if (calendarData.length === 0) calendarData = [
             // ЯНВАРЬ
