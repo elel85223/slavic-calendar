@@ -626,15 +626,29 @@
     <div class="swipe-hint" id="swipeHint" style="display: none;">← Свайпните для переключения →</div>
 
     <script>
-        // Переменная для хранения данных календаря
+// Переменная для хранения данных календаря
 let calendarData = [];
 
-// Загружаем сохранённые данные при старте
-const savedData = localStorage.getItem('customCalendarData');
-if (savedData) {
-    calendarData = JSON.parse(savedData);
-    console.log('Загружены сохранённые данные: ' + calendarData.length + ' дней');
-}
+// Загружаем данные из JSON файла на GitHub
+fetch('calendar-data.json')
+    .then(response => response.json())
+    .then(data => {
+        // Преобразуем формат данных
+        calendarData = data.map(item => ({
+            date: item['Дата'],
+            name: item['Народное название'],
+            traditions: item['Традиции и обычаи'],
+            signs: item['Приметы и предсказания'],
+            nature: item['Наблюдения за природой']
+        }));
+        console.log('Загружено дней из GitHub: ' + calendarData.length);
+        // Обновляем отображение после загрузки
+        showThreeDays();
+    })
+    .catch(error => {
+        console.error('Ошибка загрузки данных:', error);
+        // Если не удалось загрузить, используем встроенные данные
+    });
 
 // Обработчик загрузки Excel файла
 document.addEventListener('DOMContentLoaded', function() {
