@@ -592,13 +592,6 @@
         </div>
         <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
     </nav>
-    <div style="text-align: center; padding: 10px; background: rgba(0,0,0,0.3); position: fixed; top: 60px; left: 0; right: 0; z-index: 999;">
-    <input type="file" id="excelFile" accept=".xlsx,.xls" style="display: none;">
-    <button onclick="document.getElementById('excelFile').click()" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">
-        📁 Загрузить Excel файл с календарём
-    </button>
-</div>
-    
     <div class="mobile-menu" id="mobileMenu">
         <button class="mobile-menu-item active" onclick="showView('three-days'); toggleMobileMenu()">Три дня</button>
         <button class="mobile-menu-item" onclick="showView('week'); toggleMobileMenu()">Неделя</button>
